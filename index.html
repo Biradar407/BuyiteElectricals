@@ -111,14 +111,16 @@
   /* Carousel image height control */
 /* Carousel container */
 .carousel {
-  position: relative;
-  width: 150px;   /* slightly bigger than panel for padding/nav */
-  height: 180px;  /* slightly bigger than panel for padding/nav */
+  width: 150px;   /* container slightly bigger than panel */
+  height: 180px;
   overflow: hidden;
   border: 2px solid #ccc;
   border-radius: 5px;
   background: #f9f9f9;
-  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 /* Carousel inner wrapper */
@@ -127,30 +129,29 @@
   transition: transform 0.5s ease-in-out;
 }
 
-/* Passport size panel inside carousel */
+/* Passport-size panel */
 .passport-panel {
-  width: 120px;    /* fixed passport width */
-  height: 150px;   /* fixed passport height */
-  flex-shrink: 0;  /* prevent panel from growing */
+  width: 120px;    /* exact passport width */
+  height: 150px;   /* exact passport height */
+  flex-shrink: 0;  /* prevent panel from resizing */
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  background: #f9f9f9;  /* fill empty space */
+  background: #f9f9f9;
   border: 1px solid #ccc;
-  margin: auto;
   box-sizing: border-box;
 }
 
-/* Images inside panel */
+/* Image inside panel */
 .passport-panel img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;   /* scale down to fit panel like header/welcome image */
+  width: 100%;       /* force image to panel width */
+  height: 100%;      /* force image to panel height */
+  object-fit: contain; /* maintain aspect ratio, scale down */
   display: block;
 }
 
-/* Carousel navigation buttons */
+/* Navigation buttons */
 .prev, .next {
   position: absolute;
   top: 50%;
