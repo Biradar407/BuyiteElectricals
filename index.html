@@ -109,10 +109,14 @@
   z-index: 0;
 }
   /* Carousel image height control */
+/* Carousel image size control */
 .carousel img {
-  width: 100%;
-  height: 60vh;       /* or use 400px if you want fixed height */
+  width: 100%;        /* always take full width of screen */
+  max-width: 1200px;  /* optional: limit maximum width */
+  height: 60vh;       /* 60% of viewport height (adjust as needed) */
   object-fit: cover;  /* keeps image proportion, crops extra */
+  margin: 0 auto;     /* centers if max-width is applied */
+  display: block;
 }
 </style>
 <style>
