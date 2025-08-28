@@ -110,27 +110,29 @@
 }
   /* Carousel image height control */
 .carousel {
+.carousel {
   position: relative;
   width: 100%;
-  max-width: 1200px;
-  height: 60vh; /* fixed panel height */
+  max-width: 1080px;           /* match your image width */
+  aspect-ratio: 3 / 4;         /* force portrait ratio */
   margin: auto;
   overflow: hidden;
-  background: #fdf5e6; /* cream fallback background */
+  background: #fff;            /* clean background */
+  border-radius: 16px;
 }
 
 .carousel-images {
   display: flex;
-  width: 100%;
   height: 100%;
   transition: transform 0.8s ease-in-out;
 }
 
 .carousel-images img {
-  flex: 0 0 100%;   /* each image takes full width */
+  flex: 0 0 100%;
+  width: 100%;
   height: 100%;
-  object-fit: contain;   /* clear full image */
-  background: #fdf5e6;   /* same cream background */
+  object-fit: contain;         /* show full image, no crop */
+  background: #fff;
 }
 </style>
 <style>
@@ -373,7 +375,7 @@
   setInterval(() => {
     index = (index + 1) % totalImages;
     carouselImages.style.transform = `translateX(-${index * 100}%)`;
-  }, 2500); // 4 seconds per slide
+  }, 3500); // 4 seconds per slide
 
 
   // WhatsApp form submission
