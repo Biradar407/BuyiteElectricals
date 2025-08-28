@@ -108,6 +108,12 @@
   pointer-events: none; /* so it doesn't block clicks */
   z-index: 0;
 }
+  /* Carousel image height control */
+.carousel img {
+  width: 100%;
+  height: 60vh;       /* or use 400px if you want fixed height */
+  object-fit: cover;  /* keeps image proportion, crops extra */
+}
 </style>
 <style>
   /* Highlight current panel in menu */
