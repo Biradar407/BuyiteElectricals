@@ -110,21 +110,29 @@
 }
   /* Carousel image height control */
 .carousel {
+  position: relative;
   width: 100%;
-  max-width: 400px;    /* 👈 make carousel smaller */
-  height: 533px;       /* 👈 keep 3:4 ratio (400×533) */
+  max-width: 1080px;       /* Fixed width */
+  aspect-ratio: 3 / 4;     /* Fixed portrait ratio */
   margin: auto;
   overflow: hidden;
-  background: #fff;
-  border-radius: 12px;
+  background: #fff;        /* background for empty space */
+  border-radius: 16px;
+}
+
+.carousel-images {
+  display: flex;
+  height: 100%;
+  transition: transform 0.8s ease-in-out;
 }
 
 .carousel-images img {
+  flex: 0 0 100%;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* scales image to fit */
-  background: #fff;
-}
+  object-fit: contain;     /* ⬅ ensures image fits inside without cropping */
+  object-position: center; /* centers image inside */
+  background: #fff;        /* filler color for extra space */
 }
 </style>
 <style>
