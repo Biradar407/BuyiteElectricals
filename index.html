@@ -118,6 +118,15 @@
   margin: 0 auto;     /* centers if max-width is applied */
   display: block;
 }
+  .carousel-images {
+  display: flex;
+  width: 800%;
+}
+
+.carousel-images img {
+  width: 12.5%;
+  flex-shrink: 0;
+}
 </style>
 <style>
   /* Highlight current panel in menu */
@@ -351,12 +360,15 @@
 
   // Carousel animation
   const carouselImages = document.querySelector('.carousel-images');
-  let index=0;
-  setInterval(()=>{
-    index = (index+1)% totalImages;
-    carouselImages.style.transform = `translateX(-${index*100}%)`;
-    carouselImages.style.transition = 'transform 1s ease';
-  },4000);
+const images = document.querySelectorAll('.carousel-images img'); 
+let index = 0;
+const totalImages = images.length;
+
+setInterval(() => {
+  index = (index + 1) % totalImages;
+  carouselImages.style.transform = `translateX(-${index * (100 / totalImages)}%)`;
+  carouselImages.style.transition = 'transform 1s ease';
+}, 4000);
 
   // WhatsApp form submission
   function sendMail(e){
