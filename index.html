@@ -110,37 +110,49 @@
 }
   /* Carousel image height control */
 /* Carousel container */
-.carousel {
-  width: 500px;    /* visible area of carousel */
-  height: 180px;   /* same as before */
-  overflow: hidden; /* hide extra panels */
+/* Our Services Panel */
+.services-panel {
+  width: 100%;           /* take full width of parent container */
+  max-width: 500px;      /* optional max width */
+  overflow: hidden;      /* hide overflow */
+  position: relative;
+  margin: auto;
+  padding: 10px;
+  box-sizing: border-box;
   border: 2px solid #ccc;
   border-radius: 5px;
   background: #f9f9f9;
-  position: relative;
+}
+
+/* Carousel container inside Services Panel */
+.carousel {
+  width: 100%;           /* fit parent panel */
+  height: 180px;
+  overflow: hidden;      /* hide extra panels */
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 /* Carousel inner wrapper - horizontal layout */
 .carousel-inner {
-  display: flex;        /* horizontal row */
-  flex-direction: row;  /* default, can omit */
-  transition: transform 0.5s ease-in-out; /* smooth sliding */
+  display: flex;
+  flex-direction: row;
+  transition: transform 0.5s ease-in-out;
 }
 
 /* Passport-size panel */
 .passport-panel {
   width: 120px;
   height: 150px;
-  flex-shrink: 0;      /* prevent shrinking */
+  flex-shrink: 0;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #f9f9f9;
   border: 1px solid #ccc;
-  margin-right: 10px;  /* optional spacing between panels */
+  margin-right: 10px;
 }
 
 /* Images inside panel */
