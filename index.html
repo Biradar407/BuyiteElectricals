@@ -110,33 +110,61 @@
 }
   /* Carousel image height control */
 /* Carousel container */
-/* Passport size panel */
+.carousel {
+  position: relative;
+  width: 150px;   /* slightly bigger than panel for padding/nav */
+  height: 180px;  /* slightly bigger than panel for padding/nav */
+  overflow: hidden;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  background: #f9f9f9;
+  margin: auto;
+}
+
+/* Carousel inner wrapper */
+.carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Passport size panel inside carousel */
 .passport-panel {
   width: 120px;    /* fixed passport width */
   height: 150px;   /* fixed passport height */
-  overflow: hidden;
+  flex-shrink: 0;  /* prevent panel from growing */
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f9f9f9;
+  overflow: hidden;
+  background: #f9f9f9;  /* fill empty space */
   border: 1px solid #ccc;
+  margin: auto;
   box-sizing: border-box;
-  flex-shrink: 0;  /* prevent panel from growing */
 }
 
 /* Images inside panel */
 .passport-panel img {
-  width: 120px;    /* force image width to panel width */
-  height: 150px;   /* force image height to panel height */
-  object-fit: cover; /* fill panel exactly, crops slightly if needed */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;   /* scale down to fit panel like header/welcome image */
   display: block;
 }
-  .passport-panel img {
-  width: 120px;
-  height: 150px;
-  object-fit: contain; /* no cropping, fits inside panel */
-  display: block;
+
+/* Carousel navigation buttons */
+.prev, .next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
 }
+
+.prev { left: 5px; }
+.next { right: 5px; }
 </style>
 <style>
   /* Highlight current panel in menu */
