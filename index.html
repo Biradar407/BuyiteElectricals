@@ -114,7 +114,7 @@
 .carousel {
   position: relative;
   width: 100%;
-  max-width: 1200px;  /* optional max size */
+  max-width: 1200px;   /* optional max size */
   margin: auto;
   overflow: hidden;
 }
@@ -122,15 +122,17 @@
 /* Image wrapper */
 .carousel-images {
   display: flex;
-  transition: transform 1s ease; /* smooth sliding */
+  transition: transform 0.3s ease-in-out; /* faster sliding */
 }
 
 /* Each image */
 .carousel-images img {
-  width: 100%;       /* take full carousel width */
-  flex-shrink: 0;    /* prevent shrinking */
-  height: 60vh;      /* same as before */
-  object-fit: cover; /* crop nicely */
+  width: 100%;
+  height: 100%;         /* fill carousel height */
+  max-height: 80vh;     /* adjust panel height (viewport-based) */
+  object-fit: contain;  /* show entire image without cropping */
+  flex-shrink: 0;
+  background: #000;     /* adds black bars if aspect ratio differs */
 }
 </style>
 <style>
@@ -373,7 +375,7 @@
   setInterval(() => {
     index = (index + 1) % totalImages;
     carouselImages.style.transform = `translateX(-${index * 100}%)`;
-  }, 4000); // 4 seconds per slide
+  }, 2500); // 4 seconds per slide
 
 
   // WhatsApp form submission
