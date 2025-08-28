@@ -112,22 +112,29 @@
 /* Carousel container */
 /* Passport size panel */
 .passport-panel {
-  width: 120px;    /* passport width */
-  height: 150px;   /* passport height */
+  width: 120px;    /* fixed passport width */
+  height: 150px;   /* fixed passport height */
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f9f9f9;  /* background for empty space */
+  background: #f9f9f9;
   border: 1px solid #ccc;
   box-sizing: border-box;
+  flex-shrink: 0;  /* prevent panel from growing */
 }
 
 /* Images inside panel */
 .passport-panel img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;   /* fit entire image without cropping */
+  width: 120px;    /* force image width to panel width */
+  height: 150px;   /* force image height to panel height */
+  object-fit: cover; /* fill panel exactly, crops slightly if needed */
+  display: block;
+}
+  .passport-panel img {
+  width: 120px;
+  height: 150px;
+  object-fit: contain; /* no cropping, fits inside panel */
   display: block;
 }
 </style>
