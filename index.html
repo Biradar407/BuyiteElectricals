@@ -109,7 +109,7 @@
   z-index: 0;
 }
   /* Carousel image height control */
-/* Carousel container */
+/* /* Carousel container */
 .carousel {
   position: relative;
   width: 100%;
@@ -117,13 +117,13 @@
   margin: auto;
   overflow: hidden;
   height: 60vh;        /* fix panel height */
-  background: #000;    /* black background for empty space */
+  border-radius: 12px; /* smooth corners */
 }
 
 /* Image wrapper */
 .carousel-images {
   display: flex;
-  transition: transform 0.8s ease-in-out; /* smooth & faster sliding */
+  transition: transform 0.8s ease-in-out; /* smooth sliding */
   height: 100%;
 }
 
@@ -131,9 +131,8 @@
 .carousel-images img {
   width: 100%;        /* full width of carousel */
   height: 100%;       /* full height of carousel */
-  object-fit: contain; /* fit whole image without cutting */
+  object-fit: cover;  /* fills panel, crops if needed */
   flex-shrink: 0;     /* don’t shrink images */
-  background: #000;   /* background behind transparent images */
 }
 </style>
 <style>
