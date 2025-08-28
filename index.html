@@ -1,194 +1,358 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>M/s. Buyite Electricals</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M/s. Buyite Electricals</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --brand: #0f6bdc;
+    --brand-2: #2aa4f4;
+    --cream: #fff6e6;
+    --dark: #0b2239;
+    --muted: #54627a;
+    --radius: 16px;
+    --shadow: 0 10px 25px rgba(0,0,0,.08);
+    --pad: 20px;
+  }
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background:#f5f7fb;
+    color: var(--dark);
+    overflow-x: hidden;
+  }
 
-    /* Header */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: linear-gradient(145deg, #003366, #3399ff);
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 24px;
-      font-weight: bold;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      position: relative;
-      z-index: 10;
-      border-bottom: 2px solid rgba(255,255,255,0.4);
-    }
-    header img.logo {
-      height: 40px;
-      margin-right: 10px;
-    }
-    .menu-btn {
-      font-size: 26px;
-      cursor: pointer;
-      color: #fff;
-    }
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    left: -280px;
+    top:0; bottom:0;
+    width: 280px;
+    background: linear-gradient(145deg, #fff8e1, #ffe0b2);
+    padding:20px;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+    transition: left 0.3s ease;
+    z-index: 1000;
+    display:flex; flex-direction: column;
+  }
+  .sidebar.open { left:0; }
+  .sidebar h3 {
+    text-align:center; margin-bottom:15px; font-weight:800;
+    background: linear-gradient(145deg,#c8e6c9,#a5d6a7);
+    padding:10px; border-radius:12px;
+  }
+  .sidebar a {
+    display:block;
+    padding:12px 15px;
+    margin:5px 0;
+    background:#fff;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:600;
+    color: var(--dark);
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+  }
+  .sidebar a:hover { background: linear-gradient(145deg,#e0f7fa,#b2ebf2); }
 
-    /* Main wrapper for sidebar + content */
-    .page-wrapper {
-      flex: 1;
-      display: flex;
-      transition: all 0.4s ease;
-    }
+  /* Header */
+  header {
+    position: sticky; top:0; z-index: 999;
+    display:flex; justify-content: space-between; align-items:center;
+    padding: 12px 20px;
+    background: linear-gradient(90deg,var(--brand),var(--brand-2));
+    color:#fff;
+    box-shadow:0 4px 15px rgba(0,0,0,.2);
+  }
+  .menu-btn { font-size:26px; cursor:pointer; }
+  .logo { height:40px; margin-right:10px; }
 
-    /* Sidebar */
-    .sidebar {
-      width: 0;
-      background: linear-gradient(145deg, #fff8e1, #ffe0b2);
-      box-shadow: 4px 0 8px rgba(0,0,0,0.2);
-      overflow: hidden;
-      transition: width 0.4s ease;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    .sidebar.open {
-      width: 50%;
-    }
+  /* Panels */
+  .panel {
+    max-width: 1000px; margin: 40px auto;
+    background:#fff; border-radius: var(--radius);
+    padding: var(--pad); box-shadow: var(--shadow);
+    opacity:0; transform: translateY(40px);
+    transition: all 0.6s ease;
+  }
+  .panel.visible { opacity:1; transform: translateY(0); }
+  .panel h2 { margin-bottom:15px; color:var(--brand); }
+  .panel p { color: var(--muted); line-height:1.5; }
+  .btn {
+    display:inline-block; padding:10px 20px;
+    background: linear-gradient(90deg,var(--brand),var(--brand-2));
+    color:#fff; font-weight:700; border-radius:12px;
+    box-shadow: var(--shadow); text-decoration:none; margin:5px;
+    transition: all 0.3s ease;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(0,0,0,.15); }
+  /* Home page watermark */
+#home {
+  position: relative;
+}
 
-    .sidebar a, .sidebar h3 {
-      display: block;
-      padding: 15px 20px;
-      color: #333;
-      text-decoration: none;
-      font-weight: bold;
-      border-bottom: 1px solid #ddd;
-      background: linear-gradient(145deg, #fff, #f1f1f1);
-      margin: 5px 10px;
-      border-radius: 8px;
-      box-shadow: inset 0 1px 2px rgba(255,255,255,0.6), inset 0 -1px 2px rgba(0,0,0,0.2);
-      transition: background 0.3s;
-    }
-    .sidebar a:hover {
-      background: linear-gradient(145deg, #e0f7fa, #b2ebf2);
-    }
-    .sidebar h3 {
-      background: linear-gradient(145deg, #c8e6c9, #a5d6a7);
-      cursor: default;
-      text-align: center;
-    }
+#home::before {
+  content: "";
+  background: url('logo.jpg') no-repeat center center; /* Your logo */
+  background-size: 200px 200px; /* adjust size */
+  opacity: 0.05; /* watermark transparency */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px; /* same as background-size */
+  height: 200px;
+  pointer-events: none; /* so it doesn't block clicks */
+  z-index: 0;
+}
+</style>
+<style>
+  /* Highlight current panel in menu */
+  .sidebar a.active {
+    background: linear-gradient(135deg, #3399ff, #0f6bdc);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,.3);
+  }
 
-    /* Landing content */
-    main {
-      flex: 1;
-      padding: 40px 20px 20px 20px;
-      text-align: center;
-    }
+  /* Panel animations */
+  .panel {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s ease;
+    margin-bottom:40px;
+    scroll-margin-top: 70px; 
+    padding:20px;
+    border-radius:16px;
+    background:linear-gradient(145deg,#fff,#f9f9ff);
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+  }
+  .panel.visible {
+    opacity:1;
+    transform: translateY(0);
+  }
 
-    .landing-logo {
-      max-width: 150px;
-      margin: 0 auto 20px auto;
-      display: block;
-    }
+  /* Glossy buttons */
+  .btn {
+    display:inline-block;
+    padding:12px 20px;
+    border-radius:20px;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(135deg,#3399ff,#0f6bdc);
+    box-shadow:0 6px 18px rgba(0,0,0,.2);
+    text-decoration:none;
+    transition:all 0.3s ease;
+    cursor:pointer;
+  }
+  .btn:hover {
+    transform:translateY(-3px);
+    box-shadow:0 10px 25px rgba(0,0,0,.3);
+  }
 
-    main h1 {
-      font-size: 28px;
-      color: #003366;
-      margin-bottom: 25px;
-    }
+  /* Services hover effect */
+  .service-card:hover {
+    transform:translateY(-5px);
+    box-shadow:0 15px 30px rgba(0,0,0,.2);
+  }
 
-    /* Carousel */
-    .carousel {
-      position: relative;
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      overflow: hidden;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-    .carousel-images {
-      display: flex;
-      animation: slide 12s infinite;
-    }
-    .carousel-images img {
-      width: 100%;
-      height: auto;
-      flex-shrink: 0;
-      object-fit: cover;
-    }
-    @keyframes slide {
-      0%,30% { transform: translateX(0); }
-      35%,65% { transform: translateX(-100%); }
-      70%,100% { transform: translateX(-200%); }
-    }
+  /* Responsive improvements */
+  @media(max-width:900px){
+    .sidebar.open { width:70%; }
+    .services-grid { grid-template-columns:1fr; }
+  }
 
-    footer {
-      background: linear-gradient(145deg, #003366, #3399ff);
-      color: white;
-      text-align: center;
-      padding: 15px;
-      box-shadow: 0 -4px 8px rgba(0,0,0,0.3);
-    }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  /* Smooth scroll behavior */
+  html { scroll-behavior:smooth; }
+</style>
+
+<script>
+  // Highlight active menu link
+  const menuLinks = document.querySelectorAll('.sidebar a');
+  function highlightMenu(){
+    let fromTop = window.scrollY + 100;
+    menuLinks.forEach(link=>{
+      const section = document.querySelector(link.getAttribute('href'));
+      if(section.offsetTop <= fromTop && section.offsetTop + section.offsetHeight > fromTop){
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+  window.addEventListener('scroll', highlightMenu);
+  window.addEventListener('load', highlightMenu);
+
+  // Link click scroll
+  menuLinks.forEach(link=>{
+    link.addEventListener('click', function(e){
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      sidebar.classList.remove('open'); // close sidebar after click
+    });
+  });
+
+  // Animated entry for panels on scroll
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {threshold:0.3});
+  document.querySelectorAll('.panel').forEach(panel=>observer.observe(panel));
+</script>
 </head>
 <body>
-  <header>
-    <div style="display:flex; align-items:center;">
-      <img src="logo.jpg" alt="Logo" class="logo">
-      M/s. Buyite Electricals
-    </div>
-    <div class="menu-btn" onclick="toggleSidebar()">☰</div>
-  </header>
 
-  <div class="page-wrapper">
-    <div class="sidebar" id="sidebar">
-      <a href="#home">🏠 Home</a>
-      <a href="#about">ℹ️ About Us</a>
-      <a href="#services">💼 Services</a>
-      <a href="#contact">📩 Contact Us</a>
-      <h3>📞 Contact Details</h3>
-      <div class="contact-icons">
-        <div><i class="fa fa-phone"></i><span>+91-9945194502</span></div>
-        <div><i class="fa fa-envelope"></i><span>buyite.electricals88.gmail.com</span></div>
-        <div><i class="fa fa-map-marker-alt"></i><span>Government Licenced Super Grade Electrical Contractor and Engineer
-Res.: At Post: Ronihal, Tq: Kolhar, Dist : Vijayapura – 586210  </span></div>
-      </div>
-    </div>
-
-    <main id="mainContent">
-      <!-- Centered Logo -->
-      <img src="logo.jpg" alt="Company Logo" class="landing-logo">
-
-      <!-- Welcome text -->
-      <h1>Welcome to M/s. Buyite Electricals</h1>
-
-      <!-- Carousel -->
-      <div class="carousel">
-        <div class="carousel-images">
-          <img src="logo.jpg" alt="Slide 1">
-          <img src="https://via.placeholder.com/800x400/003366/ffffff?text=Second+Slide" alt="Slide 2">
-          <img src="https://via.placeholder.com/800x400/66ccff/ffffff?text=Third+Slide" alt="Slide 3">
-        </div>
-      </div>
-    </main>
+<header>
+  <div style="display:flex; align-items:center;">
+    <img src="logo.jpg" alt="Logo" class="logo">
+    <span class="brand-name">M/s. Buyite Electricals</span>
   </div>
+  <div class="menu-btn" onclick="toggleSidebar()">☰</div>
+</header>
 
-  <footer>
-    © 2025 M/s. Buyite Electricals. All Rights Reserved.
-  </footer>
+<div class="sidebar" id="sidebar">
+  <h3>Quick Navigation</h3>
+  <a href="#home" onclick="scrollToPanel('home')">🏠 Home</a>
+  <a href="#about" onclick="scrollToPanel('about')">ℹ️ About Us</a>
+  <a href="#services" onclick="scrollToPanel('services')">💼 Services</a>
+  <a href="#contact" onclick="scrollToPanel('contact')">📩 Contact</a>
+</div>
 
-  <script>
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('open');
-    }
-  </script>
+<div id="home" class="panel">
+  <h2>Welcome to M/s. Buyite Electricals</h2>
+  <p>Government of Karnataka Licensed Super Grade Electrical Contractor & Engineer. We handle design, installation, testing, and maintenance of electrical systems for industrial, commercial, and residential projects.</p>
+  <a href="#services" class="btn">View Services</a>
+</div>
+
+<div id="about" class="panel">
+  <h2>About Us</h2>
+  <p>Based in Vijayapura, we deliver reliable electrical solutions with uncompromising safety and quality. Our team comprises licensed engineers and skilled electricians handling end-to-end electrical works.</p>
+</div>
+  <div id="services" class="panel">
+  <h2>Our Services</h2>
+  <p>Turn-key and on-call services for industries, commercial spaces, and residences.</p>
+  <div class="services-grid" style="display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); margin-top:20px;">
+    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+      <h4>HT/LT Panel Works</h4>
+      <p>Design & installation of HT/LT panels, PCC, MCC, APFC, capacitor banks, and bus-ducts with testing & commissioning.</p>
+    </div>
+    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+      <h4>Industrial Wiring & Cabling</h4>
+      <p>Conduiting, tray works, armoured cabling, motor feeders, drives, earthing & lightning protection.</p>
+    </div>
+    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+      <h4>Transformer & Substation</h4>
+      <p>Substation erection, transformer installation, oil testing, earthing pits, and approvals with inspectorate.</p>
+    </div>
+    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+      <h4>Testing & Measurements</h4>
+      <p>IR, continuity, earth resistance, loop impedance, relay testing and complete energization dossiers.</p>
+    </div>
+    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+      <h4>UPS / Battery Banks</h4>
+      <p>Sizing, installation, and preventive maintenance of 6–10 KVA UPS, specific gravity checks, and health reports.</p>
+    </div>
+    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+      <h4>AMC & Breakdown</h4>
+      <p>Annual maintenance contracts, periodic inspections, and 24×7 breakdown assistance with rapid turnaround.</p>
+    </div>
+  </div>
+</div>
+
+<div id="contact" class="panel">
+  <h2>Contact Us</h2>
+  <p>You can reach us via phone, email, or visit our office. Fill out the form below for quick enquiries.</p>
+  <div style="margin-top:20px;">
+    <p>📞 +91-9945194502</p>
+    <p>✉️ info@buyiteelectricals.com</p>
+    <p>📍 Ronihal, Tq: Kolhar, Dist: Vijayapura – 586210</p>
+  </div>
+  <form onsubmit="sendMail(event)" style="margin-top:20px;">
+    <label>Name</label>
+    <input type="text" id="name" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #ccc;">
+    <label>Email</label>
+    <input type="email" id="email" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #ccc;">
+    <label>Message</label>
+    <textarea id="message" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #ccc;"></textarea>
+    <button type="submit" class="btn">Send Enquiry</button>
+  </form>
+  <p id="formNote" style="margin-top:8px; color:var(--muted);"></p>
+</div>
+
+<!-- Carousel Section -->
+<div class="panel">
+  <h2>Our Projects</h2>
+  <div class="carousel" style="position:relative; overflow:hidden; border-radius:16px; margin-top:20px;">
+    <div class="carousel-images" style="display:flex; width:300%;">
+      <img src="https://via.placeholder.com/800x400/3399ff/ffffff?text=Project+1" style="width:100%;" alt="Project 1">
+      <img src="https://via.placeholder.com/800x400/003366/ffffff?text=Project+2" style="width:100%;" alt="Project 2">
+      <img src="https://via.placeholder.com/800x400/66ccff/ffffff?text=Project+3" style="width:100%;" alt="Project 3">
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center; padding:15px; background:linear-gradient(90deg,var(--brand),var(--brand-2)); color:#fff; margin-top:40px;">
+  © 2025 M/s. Buyite Electricals. All Rights Reserved.
+</footer>
+
+<script>
+  // Sidebar toggle
+  const sidebar = document.getElementById('sidebar');
+  function toggleSidebar(){ sidebar.classList.toggle('open'); }
+
+  // Smooth scroll to panels
+  function scrollToPanel(id){
+  const headerOffset = document.querySelector('header').offsetHeight + 20; // extra 20px for spacing
+  const element = document.getElementById(id);
+  const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+  const offsetPosition = elementPosition - headerOffset;
+
+  window.scrollTo({
+    top: offsetPosition,
+    behavior: "smooth"
+  });
+
+  sidebar.classList.remove('open'); // Close sidebar
+}
+
+  // Panel animation on scroll
+  const panels = document.querySelectorAll('.panel');
+  function showPanels(){
+    const triggerBottom = window.innerHeight * 0.85;
+    panels.forEach(panel=>{
+      const panelTop = panel.getBoundingClientRect().top;
+      if(panelTop < triggerBottom){ panel.classList.add('visible'); }
+    });
+  }
+  window.addEventListener('scroll', showPanels);
+  window.addEventListener('load', showPanels);
+
+  // Carousel animation
+  const carouselImages = document.querySelector('.carousel-images');
+  let index=0;
+  setInterval(()=>{
+    index = (index+1)%3;
+    carouselImages.style.transform = `translateX(-${index*100}%)`;
+    carouselImages.style.transition = 'transform 1s ease';
+  },4000);
+
+  // WhatsApp form submission
+  function sendMail(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const msg = document.getElementById('message').value.trim();
+    const message = `Hello, my name is ${name}. Email: ${email}. Message: ${msg}`;
+    const url = `https://wa.me/919945194502?text=${encodeURIComponent(message)}`;
+    document.getElementById('formNote').textContent = 'Opening WhatsApp…';
+    window.open(url, '_blank');
+  }
+</script>
 </body>
 </html>
