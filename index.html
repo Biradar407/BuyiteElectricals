@@ -398,35 +398,17 @@
   window.addEventListener('load', showPanels);
 
   // Carousel animation
+   const carouselImages = document.querySelector('.carousel-images');
+const images = document.querySelectorAll('.carousel-images img');
+ let index = 0;
+ const totalImages = images.length;
+
+  setInterval(() => {
+    index = (index + 1) % totalImages;
+    carouselImages.style.transform = `translateX(-${index * 100}%)`;
+  }, 3500); // 4 seconds per slide/
   
- // const carouselImages = document.querySelector('.carousel-images');
-  //const images = document.querySelectorAll('.carousel-images img');
-//  let index = 0;
-//  const totalImages = images.length;
 
-  //setInterval(() => {
-   // index = (index + 1) % totalImages;
-   // carouselImages.style.transform = `translateX(-${index * 100}%)`;
- // }, 3500); // 4 seconds per slide/
-  
-let currentIndex = 0;
-const panels = document.querySelectorAll('.passport-panel');
-const total = panels.length;
-
-function showSlide(index) {
-  const inner = document.querySelector('.carousel-inner');
-  inner.style.transform = `translateX(-${index * 130}px)`; // 120px width + 10px margin
-}
-
-function nextSlide() {
-  currentIndex = (currentIndex + 1) % total;
-  showSlide(currentIndex);
-}
-
-function prevSlide() {
-  currentIndex = (currentIndex - 1 + total) % total;
-  showSlide(currentIndex);
-}
 
   // WhatsApp form submission
   function sendMail(e){
