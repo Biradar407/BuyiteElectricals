@@ -57,6 +57,7 @@
     transition: all 0.3s ease;
   }
   .sidebar a:hover { background: linear-gradient(145deg,#e0f7fa,#b2ebf2); }
+  .sidebar a.active { background: linear-gradient(135deg, #3399ff, #0f6bdc); color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.3); }
 
   /* Header */
   header {
@@ -69,14 +70,13 @@
   }
   .menu-btn { font-size:26px; cursor:pointer; }
   .logo { height:40px; margin-right:10px; }
-
   header .brand-name {
-  font-size: 19px;       /* increase as needed */
-  font-weight: 800;      /* bold */
-  color: #fff;           /* keep visible on header */
-  margin-left: 10px;     /* spacing from logo */
-  white-space: nowrap;   /* prevent wrapping */
-}
+    font-size: 19px;
+    font-weight: 800;
+    color: #fff;
+    margin-left: 10px;
+    white-space: nowrap;
+  }
 
   /* Panels */
   .panel {
@@ -89,151 +89,28 @@
   .panel.visible { opacity:1; transform: translateY(0); }
   .panel h2 { margin-bottom:15px; color:var(--brand); }
   .panel p { color: var(--muted); line-height:1.5; }
+
+  /* Buttons */
   .btn {
-    display:inline-block; padding:10px 20px;
-    background: linear-gradient(90deg,var(--brand),var(--brand-2));
-    color:#fff; font-weight:700; border-radius:12px;
-    box-shadow: var(--shadow); text-decoration:none; margin:5px;
-    transition: all 0.3s ease;
-  }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(0,0,0,.15); }
-  /* Home page watermark */
-#home {
-  position: relative;
-}
-
-#home::before {
-  content: "";
-  background: url('logo.jpg') no-repeat center center; /* Your logo */
-  background-size: 200px 200px; /* adjust size */
-  opacity: 0.2; /* watermark transparency */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px; /* same as background-size */
-  height: 200px;
-  pointer-events: none; /* so it doesn't block clicks */
-  z-index: 0;
-}
-  /* Carousel image height control */
-/* Carousel container */
-/* Our Services Panel */
-.services-panel {
-  width: 100%;           /* take full width of parent container */
-  max-width: 500px;      /* optional max width */
-  overflow: hidden;      /* hide overflow */
-  position: relative;
-  margin: auto;
-  padding: 10px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  background: #f9f9f9;
-}
-
-/* Carousel container inside Services Panel */
-.carousel {
-  width: 100%;           /* fit parent panel */
-  height: 180px;
-  overflow: hidden;      /* hide extra panels */
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-/* Carousel inner wrapper - horizontal layout */
-.carousel-inner {
-  display: flex;
-  flex-direction: row;
-  transition: transform 0.5s ease-in-out;
-}
-
-/* Passport-size panel */
-.passport-panel {
-  width: 120px;
-  height: 150px;
-  flex-shrink: 0;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f9f9f9;
-  border: 1px solid #ccc;
-  margin-right: 10px;
-}
-
-/* Images inside panel */
-.passport-panel img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-/* Navigation buttons */
-.prev, .next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: #fff;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 3px;
-}
-
-.prev { left: 5px; }
-.next { right: 5px; }
-</style>
-<style>
-  /* Highlight current panel in menu */
-  .sidebar a.active {
-    background: linear-gradient(135deg, #3399ff, #0f6bdc);
-    color: #fff;
-    box-shadow: 0 6px 18px rgba(0,0,0,.3);
-  }
-
-  /* Panel animations */
-  .panel {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s ease;
-    margin-bottom:40px;
-    scroll-margin-top: 70px; 
-    padding:20px;
-    border-radius:16px;
-    background:linear-gradient(145deg,#fff,#f9f9ff);
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-  }
-  .panel.visible {
-    opacity:1;
-    transform: translateY(0);
-  }
-
-  /* Glossy buttons */
-  .btn {
-    display:inline-block;
-    padding:12px 20px;
-    border-radius:20px;
-    font-weight:700;
-    color:#fff;
+    display:inline-block; padding:12px 20px; border-radius:20px;
+    font-weight:700; color:#fff;
     background:linear-gradient(135deg,#3399ff,#0f6bdc);
     box-shadow:0 6px 18px rgba(0,0,0,.2);
-    text-decoration:none;
-    transition:all 0.3s ease;
-    cursor:pointer;
+    text-decoration:none; transition:all 0.3s ease; cursor:pointer;
+    margin:5px;
   }
-  .btn:hover {
-    transform:translateY(-3px);
-    box-shadow:0 10px 25px rgba(0,0,0,.3);
-  }
+  .btn:hover { transform:translateY(-3px); box-shadow:0 10px 25px rgba(0,0,0,.3); }
 
-  /* Services hover effect */
-  .service-card:hover {
-    transform:translateY(-5px);
-    box-shadow:0 15px 30px rgba(0,0,0,.2);
+  /* Admin Modal */
+  #adminModal {
+    display:none; position:fixed; top:0; left:0;
+    width:100%; height:100%; background:rgba(0,0,0,0.6);
+    justify-content:center; align-items:center; z-index:2000;
+  }
+  #adminModal div {
+    background:#fff; padding:30px; border-radius:16px;
+    max-width:400px; width:90%; text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.3); position:relative;
   }
 
   /* Responsive improvements */
@@ -241,49 +118,8 @@
     .sidebar.open { width:70%; }
     .services-grid { grid-template-columns:1fr; }
   }
-
-  /* Smooth scroll behavior */
   html { scroll-behavior:smooth; }
 </style>
-
-<script>
-  // Highlight active menu link
-  const menuLinks = document.querySelectorAll('.sidebar a');
-  function highlightMenu(){
-    let fromTop = window.scrollY + 100;
-    menuLinks.forEach(link=>{
-      const section = document.querySelector(link.getAttribute('href'));
-      if(section.offsetTop <= fromTop && section.offsetTop + section.offsetHeight > fromTop){
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-  }
-  window.addEventListener('scroll', highlightMenu);
-  window.addEventListener('load', highlightMenu);
-
-  // Link click scroll
-  menuLinks.forEach(link=>{
-    link.addEventListener('click', function(e){
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      target.scrollIntoView({behavior:'smooth', block:'start'});
-      sidebar.classList.remove('open'); // close sidebar after click
-    });
-  });
-
-  // Animated entry for panels on scroll
-  const observer = new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        entry.target.classList.add('visible');
-      }
-    });
-  }, {threshold:0.3});
-  document.querySelectorAll('.panel').forEach(panel=>observer.observe(panel));
-</script>
-</head>
 <body>
 
 <header>
@@ -300,6 +136,7 @@
   <a href="#about" onclick="scrollToPanel('about')">ℹ️ About Us</a>
   <a href="#services" onclick="scrollToPanel('services')">💼 Services</a>
   <a href="#contact" onclick="scrollToPanel('contact')">📩 Contact</a>
+  <a href="#" onclick="openAdminLogin()">🔑 Admin</a>
 </div>
 
 <div id="home" class="panel">
@@ -312,31 +149,32 @@
   <h2>About Us</h2>
   <p>Based in Vijayapura, we deliver reliable electrical solutions with uncompromising safety and quality. Our team comprises licensed engineers and skilled electricians handling end-to-end electrical works.</p>
 </div>
-  <div id="services" class="panel">
+
+<div id="services" class="panel">
   <h2>Our Services</h2>
   <p>Turn-key and on-call services for industries, commercial spaces, and residences.</p>
   <div class="services-grid" style="display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); margin-top:20px;">
-    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+    <div class="service-card">
       <h4>HT/LT Panel Works</h4>
       <p>Design & installation of HT/LT panels, PCC, MCC, APFC, capacitor banks, and bus-ducts with testing & commissioning.</p>
     </div>
-    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+    <div class="service-card">
       <h4>Industrial Wiring & Cabling</h4>
       <p>Conduiting, tray works, armoured cabling, motor feeders, drives, earthing & lightning protection.</p>
     </div>
-    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+    <div class="service-card">
       <h4>Transformer & Substation</h4>
       <p>Substation erection, transformer installation, oil testing, earthing pits, and approvals with inspectorate.</p>
     </div>
-    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+    <div class="service-card">
       <h4>Testing & Measurements</h4>
       <p>IR, continuity, earth resistance, loop impedance, relay testing and complete energization dossiers.</p>
     </div>
-    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+    <div class="service-card">
       <h4>UPS / Battery Banks</h4>
       <p>Sizing, installation, and preventive maintenance of 6–10 KVA UPS, specific gravity checks, and health reports.</p>
     </div>
-    <div class="service-card" style="background:#fff; padding:20px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,.08); transition:all 0.3s ease;">
+    <div class="service-card">
       <h4>AMC & Breakdown</h4>
       <p>Annual maintenance contracts, periodic inspections, and 24×7 breakdown assistance with rapid turnaround.</p>
     </div>
@@ -376,15 +214,35 @@
       <img src="be6.jpg" style="width:100%;" alt="Project 6">
       <img src="be7.jpg" style="width:100%;" alt="Project 7">
       <img src="be8.jpg" style="width:100%;" alt="Project 8">
-    
     </div>
+  </div>
+</div>
+
+<!-- Admin Dashboard Panel -->
+<div id="adminPage" class="panel" style="display:none;">
+  <h2>Admin Dashboard</h2>
+  <div style="display:flex; flex-wrap:wrap; gap:20px; margin-top:20px;">
+    <a href="#" class="btn">Expense Tracking</a>
+    <a href="#" class="btn">Billing</a>
+    <a href="#" class="btn">Quotation</a>
+  </div>
+</div>
+
+<!-- Admin Login Modal -->
+<div id="adminModal">
+  <div>
+    <h2 style="margin-bottom:20px; color:var(--brand);">Admin Login</h2>
+    <input type="text" id="adminUser" placeholder="Username" style="width:100%; padding:10px; margin-bottom:15px; border-radius:12px; border:1px solid #ccc;">
+    <input type="password" id="adminPass" placeholder="Password" style="width:100%; padding:10px; margin-bottom:20px; border-radius:12px; border:1px solid #ccc;">
+    <button class="btn" onclick="checkAdminLogin()">Login</button>
+    <p id="adminNote" style="color:red; margin-top:10px;"></p>
+    <span style="position:absolute; top:10px; right:15px; font-size:20px; cursor:pointer;" onclick="closeAdminModal()">×</span>
   </div>
 </div>
 
 <footer style="text-align:center; padding:15px; background:linear-gradient(90deg,var(--brand),var(--brand-2)); color:#fff; margin-top:40px;">
   © 2025 M/s. Buyite Electricals. All Rights Reserved.
 </footer>
-
 <script>
   // Sidebar toggle
   const sidebar = document.getElementById('sidebar');
@@ -392,20 +250,29 @@
 
   // Smooth scroll to panels
   function scrollToPanel(id){
-  const headerOffset = document.querySelector('header').offsetHeight + 20; // extra 20px for spacing
-  const element = document.getElementById(id);
-  const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-  const offsetPosition = elementPosition - headerOffset;
+    const headerOffset = document.querySelector('header').offsetHeight + 20;
+    const element = document.getElementById(id);
+    const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+    const offsetPosition = elementPosition - headerOffset;
+    window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    sidebar.classList.remove('open'); // Close sidebar
+  }
 
-  window.scrollTo({
-    top: offsetPosition,
-    behavior: "smooth"
-  });
+  // Highlight active menu link on scroll
+  const menuLinks = document.querySelectorAll('.sidebar a');
+  function highlightMenu(){
+    let fromTop = window.scrollY + 100;
+    menuLinks.forEach(link=>{
+      const target = document.querySelector(link.getAttribute('href'));
+      if(target && target.offsetTop <= fromTop && target.offsetTop + target.offsetHeight > fromTop){
+        link.classList.add('active');
+      } else { link.classList.remove('active'); }
+    });
+  }
+  window.addEventListener('scroll', highlightMenu);
+  window.addEventListener('load', highlightMenu);
 
-  sidebar.classList.remove('open'); // Close sidebar
-}
-
-  // Panel animation on scroll
+  // Animate panels on scroll
   const panels = document.querySelectorAll('.panel');
   function showPanels(){
     const triggerBottom = window.innerHeight * 0.85;
@@ -418,17 +285,14 @@
   window.addEventListener('load', showPanels);
 
   // Carousel animation
-   const carouselImages = document.querySelector('.carousel-images');
-const images = document.querySelectorAll('.carousel-images img');
- let index = 0;
- const totalImages = images.length;
-
+  const carouselImages = document.querySelector('.carousel-images');
+  const images = document.querySelectorAll('.carousel-images img');
+  let index = 0;
+  const totalImages = images.length;
   setInterval(() => {
     index = (index + 1) % totalImages;
     carouselImages.style.transform = `translateX(-${index * 100}%)`;
-  }, 3500); // 4 seconds per slide/
-  
-
+  }, 3500);
 
   // WhatsApp form submission
   function sendMail(e){
@@ -440,6 +304,29 @@ const images = document.querySelectorAll('.carousel-images img');
     const url = `https://wa.me/919945194502?text=${encodeURIComponent(message)}`;
     document.getElementById('formNote').textContent = 'Opening WhatsApp…';
     window.open(url, '_blank');
+  }
+
+  // Admin modal functions
+  function openAdminLogin(){
+    document.getElementById('adminModal').style.display = 'flex';
+    sidebar.classList.remove('open');
+  }
+  function closeAdminModal(){
+    document.getElementById('adminModal').style.display = 'none';
+    document.getElementById('adminNote').textContent = '';
+    document.getElementById('adminUser').value = '';
+    document.getElementById('adminPass').value = '';
+  }
+  function checkAdminLogin(){
+    const user = document.getElementById('adminUser').value.trim();
+    const pass = document.getElementById('adminPass').value.trim();
+    if(user === 'admin' && pass === '@Mruti#88'){
+      closeAdminModal();
+      document.getElementById('adminPage').style.display = 'block';
+      document.getElementById('adminPage').scrollIntoView({behavior:'smooth'});
+    } else {
+      document.getElementById('adminNote').textContent = 'Invalid username or password!';
+    }
   }
 </script>
 </body>
