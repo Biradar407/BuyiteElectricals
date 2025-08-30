@@ -1,156 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Expense Tracker</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-</head>
-<body>
-  <h2>Personal Expense</h2>
-  <input type="text" id="desc" placeholder="Description">
-  <input type="number" id="amt" placeholder="Amount">
-  <input type="date" id="date">
-  <select id="payment">
-    <option>Cash</option>
-    <option>IMPS</option>
-    <option>RTGS</option>
-    <option>PhonePe</option>
-  </select>
-  <button onclick="savePersonal()">Save Personal</button>
-
-  <h2>Site Expense</h2>
-  <input type="text" id="site" placeholder="Site Name">
-  <input type="text" id="category" placeholder="Category">
-  <input type="text" id="descSite" placeholder="Description">
-  <input type="number" id="amtSite" placeholder="Amount">
-  <input type="date" id="dateSite">
-  <select id="paymentSite">
-    <option>Cash</option>
-    <option>IMPS</option>
-    <option>RTGS</option>
-    <option>PhonePe</option>
-  </select>
-  <button onclick="saveSite()">Save Site Expense</button>
-
-  <h2>Filter & Print PDF</h2>
-  <label>Choose Type:</label>
-  <select id="filterType">
-    <option value="All">All</option>
-    <option value="Personal">Personal</option>
-    <option value="Site">Site</option>
-  </select>
-  <button onclick="printPDF()">Print PDF</button>
-
-  <h2>All Expenses (JSON)</h2>
-  <pre id="allExpenses"></pre>
+<!-- ADDITION SECTION -->
+<div style="margin:20px; padding:15px; border:1px solid #ccc; border-radius:8px;">
+  <h2>Add Two Numbers</h2>
+  <input type="number" id="num1" placeholder="Number 1">
+  <input type="number" id="num2" placeholder="Number 2">
+  <button onclick="addNumbers()">Add & Save</button>
+  <div id="additionResult" style="margin-top:10px; font-weight:bold;"></div>
+</div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbwgAe0nhiG7pYb2oHeQ0F1XsvUW3ebLPYnjNH7DIa8i0hcvcVQXmk_dX_Sh4yFqsdA7/exec"; // <-- Replace with your Web App URL
+const ADDITION_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfH2414z_X-9xXCck8GxajGh19UIn0uylEe4zvXoga1dK4Kyf6FqUx5vfpTlvnC2HI/exec"; // Replace with Apps Script Web App URL
 
-let allExpenses = [];
-
-// --- Save Personal Expense ---
-function savePersonal(){
-  const desc = document.getElementById("desc").value;
-  const amt = parseFloat(document.getElementById("amt").value);
-  const date = document.getElementById("date").value;
-  const payment = document.getElementById("payment").value;
-  if(!desc || isNaN(amt) || !date){ alert("Fill all fields"); return; }
-
-  fetch(GAS_URL,{
-    method:"POST",
-    body: JSON.stringify({action:"saveExpense", type:"Personal", desc, amt, date, payment}),
-    headers: {"Content-Type":"application/json"}
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    fetchExpenses();
-    alert("Personal saved! Total items: "+data.total);
-    document.getElementById("desc").value='';
-    document.getElementById("amt").value='';
-    document.getElementById("date").value='';
-  })
-  .catch(()=>alert("Error saving data!"));
-}
-
-// --- Save Site Expense ---
-function saveSite(){
-  const site = document.getElementById("site").value;
-  const category = document.getElementById("category").value;
-  const desc = document.getElementById("descSite").value;
-  const amt = parseFloat(document.getElementById("amtSite").value);
-  const date = document.getElementById("dateSite").value;
-  const payment = document.getElementById("paymentSite").value;
-  if(!site || !category || !desc || isNaN(amt) || !date){ alert("Fill all fields"); return; }
-
-  fetch(GAS_URL,{
-    method:"POST",
-    body: JSON.stringify({action:"saveExpense", type:"Site", site, category, desc, amt, date, payment}),
-    headers: {"Content-Type":"application/json"}
-  })
-  .then(res=>res.json())
-  .then(data=>{
-    fetchExpenses();
-    alert("Site saved! Total items: "+data.total);
-    document.getElementById("site").value='';
-    document.getElementById("category").value='';
-    document.getElementById("descSite").value='';
-    document.getElementById("amtSite").value='';
-    document.getElementById("dateSite").value='';
-  })
-  .catch(()=>alert("Error saving data!"));
-}
-
-// --- Fetch all expenses ---
-function fetchExpenses(){
-  fetch(GAS_URL+"?action=getAllExpenses")
-    .then(res=>res.json())
-    .then(data=>{
-      allExpenses = data;
-      document.getElementById("allExpenses").textContent = JSON.stringify(data,null,2);
-    })
-    .catch(()=>document.getElementById("allExpenses").textContent="Error fetching data!");
-}
-
-// --- Print PDF ---
-function printPDF(){
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  const filter = document.getElementById("filterType").value;
-  let data = allExpenses.filter(e => filter==="All" || e.type===filter);
-
-  doc.setFontSize(16);
-  doc.text("Expense Report", 14, 20);
-  doc.setFontSize(12);
-  doc.text("Date: "+new Date().toLocaleDateString(), 14, 28);
-
-  if(data.length===0){
-    doc.text("No records found for selected filter.", 14, 40);
-  } else {
-    let tableData = data.map(e=>[
-      e.type,
-      e.site || "-",
-      e.category || "-",
-      e.desc,
-      e.amt,
-      e.date,
-      e.payment
-    ]);
-
-    doc.autoTable({
-      head:[["Type","Site","Category","Description","Amount","Date","Payment"]],
-      body:tableData,
-      startY:35,
-      headStyles:{fillColor:[85,89,92]}
-    });
+function addNumbers() {
+  const num1 = parseFloat(document.getElementById("num1").value);
+  const num2 = parseFloat(document.getElementById("num2").value);
+  if(isNaN(num1) || isNaN(num2)){
+    alert("Please enter valid numbers");
+    return;
   }
 
-  doc.save("Expense_Report.pdf");
-}
+  const sum = num1 + num2;
+  const data = {type:"addition", num1, num2, sum};
 
-// --- Initialize ---
-fetchExpenses();
+  fetch(ADDITION_SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {"Content-Type": "application/json"}
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(resp.status === "success"){
+      document.getElementById("additionResult").innerText = `Sum: ${resp.sum} (Saved!)`;
+    } else {
+      document.getElementById("additionResult").innerText = `Error: ${resp.message}`;
+    }
+  })
+  .catch(err => {
+    document.getElementById("additionResult").innerText = "Request failed: "+err;
+  });
+}
 </script>
-</body>
-</html>
