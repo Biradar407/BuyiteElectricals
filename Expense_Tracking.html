@@ -1,37 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expense Tracker & Number Addition</title>
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:20px; background:#f2f2f2; }
+  h1, h2 { text-align:center; }
+  .section { background:#fff; padding:20px; margin:20px auto; border-radius:8px; max-width:600px; box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+  input, select { padding:8px; margin:5px 0; width:100%; box-sizing:border-box; }
+  button { padding:10px 15px; margin-top:10px; cursor:pointer; background:#007bff; color:#fff; border:none; border-radius:4px;}
+  button:hover { background:#0056b3; }
+  #additionResult, #expenseResult { margin-top:10px; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<h1>M/s. Buyite Electricals</h1>
+
+<!-- EXPENSE TRACKER SECTION -->
+<div class="section">
+  <h2>Expense Tracker</h2>
+  <input type="text" id="item" placeholder="Expense Item">
+  <input type="number" id="amount" placeholder="Amount">
+  <select id="category">
+    <option value="">Select Category</option>
+    <option value="Material">Material</option>
+    <option value="Labor">Labor</option>
+    <option value="Other">Other</option>
+  </select>
+  <button onclick="saveExpense()">Save Expense</button>
+  <div id="expenseResult"></div>
+</div>
+
 <!-- ADDITION SECTION -->
-<div style="margin:20px; padding:15px; border:1px solid #ccc; border-radius:8px;">
+<div class="section">
   <h2>Add Two Numbers</h2>
   <input type="number" id="num1" placeholder="Number 1">
   <input type="number" id="num2" placeholder="Number 2">
   <button onclick="addNumbers()">Add & Save</button>
-  <div id="additionResult" style="margin-top:10px; font-weight:bold;"></div>
+  <div id="additionResult"></div>
 </div>
 
 <script>
-const ADDITION_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfH2414z_X-9xXCck8GxajGh19UIn0uylEe4zvXoga1dK4Kyf6FqUx5vfpTlvnC2HI/exec"; // Replace with Apps Script Web App URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzfH2414z_X-9xXCck8GxajGh19UIn0uylEe4zvXoga1dK4Kyf6FqUx5vfpTlvnC2HI/exec"; // <-- Replace with your Apps Script /exec URL
 
+// ------------------ Expense Tracker ------------------
+function saveExpense() {
+  const item = document.getElementById("item").value.trim();
+  const amount = parseFloat(document.getElementById("amount").value);
+  const category = document.getElementById("category").value;
+
+  if(!item || isNaN(amount) || !category){
+    alert("Please fill all expense fields correctly");
+    return;
+  }
+
+  const data = { type:"expense", item, amount, category };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {"Content-Type":"application/json"}
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(resp.status === "success"){
+      document.getElementById("expenseResult").innerText = resp.message;
+      document.getElementById("item").value = "";
+      document.getElementById("amount").value = "";
+      document.getElementById("category").value = "";
+    } else {
+      document.getElementById("expenseResult").innerText = "Error: "+resp.message;
+    }
+  })
+  .catch(err => {
+    document.getElementById("expenseResult").innerText = "Request failed: "+err;
+  });
+}
+
+// ------------------ Add Two Numbers ------------------
 function addNumbers() {
   const num1 = parseFloat(document.getElementById("num1").value);
   const num2 = parseFloat(document.getElementById("num2").value);
+
   if(isNaN(num1) || isNaN(num2)){
     alert("Please enter valid numbers");
     return;
   }
 
   const sum = num1 + num2;
-  const data = {type:"addition", num1, num2, sum};
+  const data = { type:"addition", num1, num2, sum };
 
-  fetch(ADDITION_SCRIPT_URL, {
+  fetch(SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify(data),
-    headers: {"Content-Type": "application/json"}
+    headers: {"Content-Type":"application/json"}
   })
   .then(res => res.json())
   .then(resp => {
     if(resp.status === "success"){
       document.getElementById("additionResult").innerText = `Sum: ${resp.sum} (Saved!)`;
+      document.getElementById("num1").value = "";
+      document.getElementById("num2").value = "";
     } else {
-      document.getElementById("additionResult").innerText = `Error: ${resp.message}`;
+      document.getElementById("additionResult").innerText = "Error: "+resp.message;
     }
   })
   .catch(err => {
@@ -39,3 +112,6 @@ function addNumbers() {
   });
 }
 </script>
+
+</body>
+</html>
