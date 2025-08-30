@@ -36,69 +36,42 @@ tr:nth-child(even){ background:#e6e8eb; }
 <header>M/s. Buyite Electricals - Expenditure Tracker</header>
 
 <nav>
-<button onclick="showPanel('personal')">Personal Expenditure</button>
-<button onclick="showPanel('sites')">Site Management</button>
-<button onclick="showPanel('analysis')">Data Analysis</button>
+  <button onclick="showPanel('personal')">Personal Expenditure</button>
+  <button onclick="showPanel('sites')">Site Management</button>
+  <button onclick="showPanel('analysis')">Data Analysis</button>
 </nav>
 
 <!-- Personal Expenditure Panel -->
 <div id="personal" class="panel active">
-<div class="card">
-<h2>Personal Expenditure</h2>
-<label>Description:</label><input type="text" id="personalDesc">
-<label>Amount:</label><input type="number" id="personalAmt">
-<label>Date:</label><input type="date" id="personalDate">
-<label>Payment Type:</label>
-<select id="personalPayment"><option>Cash</option><option>IMPS</option><option>RTGS</option><option>PhonePe</option></select>
-<button class="action" onclick="addPersonalExpense()">Add Expense</button>
-<div class="scrollable-table"><table id="personalTable"><tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th>Payment</th></tr></table></div>
-</div>
-</div>
-
-<!-- Site Management Panel -->
-<div id="sites" class="panel">
-<div class="card">
-<h2>Site Management</h2>
-<label>Add New Site:</label>
-<input type="text" id="siteName" placeholder="Enter new site name">
-<button class="action" onclick="addSite()">Add Site</button>
-<label>Or Select Existing Site:</label>
-<select id="siteSelectManage" onchange="populateSiteFields()"><option value="">--Select Site--</option></select>
-<div id="siteFields" style="margin-top:15px; display:none;">
-<label>Category:</label>
-<select id="cat-selected"><option value="Labour">Labour Payment</option><option value="Travel">Travel</option><option value="Material">Material</option><option value="Office">Office Expenses</option><option value="Misc">Miscellaneous</option></select>
-<label>Description:</label><input type="text" id="desc-selected">
-<label>Amount:</label><input type="number" id="amt-selected">
-<label>Date:</label><input type="date" id="date-selected">
-<label>Payment Type:</label><select id="pay-selected"><option>Cash</option><option>IMPS</option><option>RTGS</option><option>PhonePe</option></select>
-<button class="action" onclick="addSiteExpenseFromSelect()">Add Expense</button>
-<div class="scrollable-table"><table id="table-selected"><tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th>Payment</th></tr></table></div>
-</div>
-<div id="siteList"></div>
-</div>
-</div>
-
-<!-- Data Analysis Panel -->
-<div id="analysis" class="panel">
-<div class="card">
-<h2>Expenditure Analysis</h2>
-<label>Start Date:</label><input type="date" id="startDate">
-<label>End Date:</label><input type="date" id="endDate">
-<label>Select Site:</label><select id="siteSelect"><option value="">All Sites</option></select>
-<button class="action" onclick="generateAnalysis()">Filter & Generate</button>
-<button class="action" onclick="printPDF()">Print PDF</button>
-<div id="analysisContent" class="scrollable-table"></div>
-</div>
+  <div class="card">
+    <h2>Personal Expenditure</h2>
+    <label>Description:</label><input type="text" id="personalDesc">
+    <label>Amount:</label><input type="number" id="personalAmt">
+    <label>Date:</label><input type="date" id="personalDate">
+    <label>Payment Type:</label>
+    <select id="personalPayment">
+      <option>Cash</option>
+      <option>IMPS</option>
+      <option>RTGS</option>
+      <option>PhonePe</option>
+    </select>
+    <button class="action" onclick="addPersonalExpense()">Add Expense</button>
+    <div class="scrollable-table">
+      <table id="personalTable">
+        <tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th>Payment</th></tr>
+      </table>
+    </div>
+  </div>
 </div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbxhG-w1VbQg3WwBds5HYeXSJJDgqEfJ7N-0nY5YyzD0case3D_DcuFgiEzpHTMOQ4SE/exec"; // replace with your deployed Apps Script URL
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxFYx3EUYY7USw823_AMOkYb9ENh6UJUcXW1g1VsmyUrdo60RYyBaVqFLHJ-yfGftU5/exec"; // replace with deployed Apps Script URL
 
-// Panel navigation
+// --- Panel navigation ---
 function showPanel(id){
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  if(id === 'analysis') generateAnalysis();
+  if(id==='analysis') generateAnalysis();
 }
 
 // --- Personal Expenses ---
@@ -112,22 +85,29 @@ function addPersonalExpense(){
   if(!desc || isNaN(amt) || !date){ alert("Fill all fields!"); return; }
 
   fetch(GAS_URL, {
-    method: 'POST',
+    method:'POST',
     body: JSON.stringify({ action:'savePersonal', desc, amt, date, payment }),
-    headers: { 'Content-Type':'application/json' }
-  }).then(res => res.json())
-    .then(res => {
+    headers: {'Content-Type':'application/json'}
+  })
+  .then(res=>res.json())
+  .then(res=>{
+    if(res.status==='success'){
       fetchPersonalExpenses();
-      document.getElementById("personalDesc").value = "";
-      document.getElementById("personalAmt").value = "";
-      document.getElementById("personalDate").value = "";
-    });
+      document.getElementById("personalDesc").value='';
+      document.getElementById("personalAmt").value='';
+      document.getElementById("personalDate").value='';
+      showToast("Personal expense saved successfully!");
+    } else {
+      showToast("Failed to save personal expense!", false);
+    }
+  })
+  .catch(()=> showToast("Error connecting to server!", false));
 }
 
 function fetchPersonalExpenses(){
   fetch(GAS_URL+"?action=getPersonal")
-    .then(res => res.json())
-    .then(data => {
+    .then(res=>res.json())
+    .then(data=>{
       personalExpenses = data;
       updatePersonalTable();
     });
@@ -136,7 +116,7 @@ function fetchPersonalExpenses(){
 function updatePersonalTable(){
   const table = document.getElementById("personalTable");
   table.innerHTML = "<tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th>Payment</th></tr>";
-  personalExpenses.forEach(e => {
+  personalExpenses.forEach(e=>{
     table.innerHTML += `<tr>
       <td>${e.category}</td>
       <td>${e.desc}</td>
@@ -147,86 +127,174 @@ function updatePersonalTable(){
   });
 }
 
-// --- Sites ---
+// --- Toast Notifications ---
+function showToast(msg, success=true){
+  const toast = document.createElement("div");
+  toast.textContent = msg;
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.left = "50%";
+  toast.style.transform = "translateX(-50%)";
+  toast.style.background = success?"#27ae60":"#c0392b";
+  toast.style.color="#fff";
+  toast.style.padding="12px 25px";
+  toast.style.borderRadius="8px";
+  toast.style.boxShadow="0 2px 6px rgba(0,0,0,0.2)";
+  toast.style.zIndex=9999;
+  toast.style.opacity=0;
+  toast.style.transition="opacity 0.3s";
+  document.body.appendChild(toast);
+  setTimeout(()=>{ toast.style.opacity=1; },100);
+  setTimeout(()=>{ toast.style.opacity=0; setTimeout(()=>{ toast.remove(); },300); },2500);
+}
+
+// --- Initialize ---
+fetchPersonalExpenses();
+</script>
+<!-- Site Management Panel -->
+<div id="sites" class="panel">
+  <div class="card">
+    <h2>Site Management</h2>
+    <label>Add New Site:</label>
+    <input type="text" id="siteName" placeholder="Enter new site name">
+    <button class="action" onclick="addSite()">Add Site</button>
+
+    <label>Or Select Existing Site:</label>
+    <select id="siteSelectManage" onchange="populateSiteFields()">
+      <option value="">--Select Site--</option>
+    </select>
+
+    <div id="siteFields" style="margin-top:15px; display:none;">
+      <label>Category:</label>
+      <select id="cat-selected">
+        <option value="Labour">Labour Payment</option>
+        <option value="Travel">Travel</option>
+        <option value="Material">Material</option>
+        <option value="Office">Office Expenses</option>
+        <option value="Misc">Miscellaneous</option>
+      </select>
+      <label>Description:</label><input type="text" id="desc-selected">
+      <label>Amount:</label><input type="number" id="amt-selected">
+      <label>Date:</label><input type="date" id="date-selected">
+      <label>Payment Type:</label>
+      <select id="pay-selected">
+        <option>Cash</option>
+        <option>IMPS</option>
+        <option>RTGS</option>
+        <option>PhonePe</option>
+      </select>
+      <button class="action" onclick="addSiteExpenseFromSelect()">Add Expense</button>
+      <div class="scrollable-table">
+        <table id="table-selected">
+          <tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th>Payment</th></tr>
+        </table>
+      </div>
+    </div>
+
+    <div id="siteList"></div>
+  </div>
+</div>
+
+<!-- Data Analysis Panel -->
+<div id="analysis" class="panel">
+  <div class="card">
+    <h2>Expenditure Analysis</h2>
+    <label>Start Date:</label><input type="date" id="startDate">
+    <label>End Date:</label><input type="date" id="endDate">
+    <label>Select Site:</label>
+    <select id="siteSelect"><option value="">All Sites</option></select>
+    <button class="action" onclick="generateAnalysis()">Filter & Generate</button>
+    <button class="action" onclick="printPDF()">Print PDF</button>
+    <div id="analysisContent" class="scrollable-table"></div>
+  </div>
+</div>
+
+<script>
+// --- Site Management ---
 let sites = {};
 
 function addSite(){
   const name = document.getElementById("siteName").value.trim();
-  if(!name || sites[name]){ alert("Enter new site or avoid duplicate!"); return; }
+  if(!name || sites[name]){ showToast("Enter a unique site name!", false); return; }
 
-  fetch(GAS_URL, {
+  fetch(GAS_URL,{
     method:'POST',
-    body: JSON.stringify({ action:'addSite', site:name }),
-    headers: { 'Content-Type':'application/json' }
+    body:JSON.stringify({action:'addSite', site:name}),
+    headers:{'Content-Type':'application/json'}
   }).then(res=>res.json())
-    .then(()=> fetchSites());
+    .then(res=>{
+      if(res.status==='success'){ fetchSites(); showToast("Site added successfully!"); }
+      else showToast("Failed to add site!", false);
+    });
 
-  document.getElementById("siteName").value = "";
+  document.getElementById("siteName").value='';
 }
 
 function fetchSites(){
   fetch(GAS_URL+"?action=getSites")
     .then(res=>res.json())
     .then(data=>{
-      sites = {};
-      data.forEach(s => sites[s]=[]);
+      sites={};
+      data.forEach(s=>sites[s]=[]);
       updateSiteList();
     });
 }
 
 function updateSiteList(){
-  const container = document.getElementById("siteList"); container.innerHTML="";
-  const siteSelect = document.getElementById("siteSelect"); siteSelect.innerHTML='<option value="">All Sites</option>';
-  const siteSelectManage = document.getElementById("siteSelectManage"); siteSelectManage.innerHTML='<option value="">--Select Site--</option>';
+  const container=document.getElementById("siteList"); container.innerHTML="";
+  const siteSelect=document.getElementById("siteSelect"); siteSelect.innerHTML='<option value="">All Sites</option>';
+  const siteSelectManage=document.getElementById("siteSelectManage"); siteSelectManage.innerHTML='<option value="">--Select Site--</option>';
+
   for(let site in sites){
-    let optionManage = document.createElement("option"); optionManage.value = site; optionManage.textContent = site; siteSelectManage.appendChild(optionManage);
-    let optionAnalysis = document.createElement("option"); optionAnalysis.value = site; optionAnalysis.textContent = site; siteSelect.appendChild(optionAnalysis);
-    let div = document.createElement("div"); div.classList.add("card"); div.innerHTML=`<h3>${site}</h3>`; container.appendChild(div);
+    let optionManage=document.createElement("option"); optionManage.value=site; optionManage.textContent=site; siteSelectManage.appendChild(optionManage);
+    let optionAnalysis=document.createElement("option"); optionAnalysis.value=site; optionAnalysis.textContent=site; siteSelect.appendChild(optionAnalysis);
+    let div=document.createElement("div"); div.classList.add("card"); div.innerHTML=`<h3>${site}</h3>`; container.appendChild(div);
   }
 }
 
-// Populate site fields when selected
 function populateSiteFields(){
-  const selected = document.getElementById("siteSelectManage").value;
+  const selected=document.getElementById("siteSelectManage").value;
   if(!selected){ document.getElementById("siteFields").style.display="none"; return; }
   document.getElementById("siteFields").style.display="block";
   fetchSiteExpenses(selected);
 }
 
-// Add site expense
 function addSiteExpenseFromSelect(){
-  const selected = document.getElementById("siteSelectManage").value;
-  if(!selected){ alert("Select a site first!"); return; }
-  const cat = document.getElementById("cat-selected").value;
-  const desc = document.getElementById("desc-selected").value;
-  const amt = parseFloat(document.getElementById("amt-selected").value);
-  const date = document.getElementById("date-selected").value;
-  const payment = document.getElementById("pay-selected").value;
-  if(!desc || isNaN(amt) || !date){ alert("Fill all fields!"); return; }
+  const selected=document.getElementById("siteSelectManage").value;
+  if(!selected){ showToast("Select a site first!", false); return; }
 
-  fetch(GAS_URL, {
+  const cat=document.getElementById("cat-selected").value;
+  const desc=document.getElementById("desc-selected").value;
+  const amt=parseFloat(document.getElementById("amt-selected").value);
+  const date=document.getElementById("date-selected").value;
+  const payment=document.getElementById("pay-selected").value;
+  if(!desc || isNaN(amt) || !date){ showToast("Fill all fields!", false); return; }
+
+  fetch(GAS_URL,{
     method:'POST',
-    body: JSON.stringify({ action:'saveSite', site:selected, category:cat, desc, amt, date, payment }),
-    headers: { 'Content-Type':'application/json' }
+    body:JSON.stringify({action:'saveSite', site:selected, category:cat, desc, amt, date, payment}),
+    headers:{'Content-Type':'application/json'}
   }).then(res=>res.json())
-    .then(()=> fetchSiteExpenses(selected));
+    .then(res=>{
+      if(res.status==='success'){ fetchSiteExpenses(selected); showToast("Site expense added!"); }
+      else showToast("Failed to add expense!", false);
+    });
 
-  document.getElementById("desc-selected").value = "";
-  document.getElementById("amt-selected").value = "";
-  document.getElementById("date-selected").value = "";
+  document.getElementById("desc-selected").value='';
+  document.getElementById("amt-selected").value='';
+  document.getElementById("date-selected").value='';
 }
 
-// Fetch site expenses
 function fetchSiteExpenses(site){
   fetch(GAS_URL+`?action=getSite&site=${encodeURIComponent(site)}`)
     .then(res=>res.json())
-    .then(data => { sites[site]=data; updateSelectedSiteTable(site); });
+    .then(data=>{ sites[site]=data; updateSelectedSiteTable(site); });
 }
 
 function updateSelectedSiteTable(site){
-  const table = document.getElementById("table-selected");
-  table.innerHTML = "<tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th>Payment</th></tr>";
-  sites[site].forEach(e => {
+  const table=document.getElementById("table-selected");
+  table.innerHTML="<tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th><th>Payment</th></tr>";
+  sites[site].forEach(e=>{
     table.innerHTML += `<tr>
       <td>${e.category}</td>
       <td>${e.desc}</td>
@@ -239,9 +307,9 @@ function updateSelectedSiteTable(site){
 
 // --- Data Analysis ---
 function generateAnalysis(){
-  const start = document.getElementById("startDate").value;
-  const end = document.getElementById("endDate").value;
-  const selectedSite = document.getElementById("siteSelect").value;
+  const start=document.getElementById("startDate").value;
+  const end=document.getElementById("endDate").value;
+  const selectedSite=document.getElementById("siteSelect").value;
   let html="<div class='summary'>";
 
   const filteredPersonal = personalExpenses.filter(e=>(!start||e.date>=start)&&(!end||e.date<=end));
@@ -269,30 +337,24 @@ function generateAnalysis(){
   document.getElementById("analysisContent").innerHTML = html;
 }
 
-// --- PDF Generation ---
+// --- PDF Export ---
 function printPDF(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.setFontSize(16); doc.text("M/s. Buyite Electricals - Expenditure Report", 14, 20);
   doc.setFontSize(12); doc.text(`Date: ${new Date().toLocaleDateString()}`, 14, 28);
-  
+
   const tables = document.querySelectorAll("#analysisContent table"); let y=35;
   tables.forEach(tbl=>{
     doc.autoTable({ html: tbl, startY: y, theme:'grid', headStyles:{fillColor:[85,89,92]} });
     y = doc.lastAutoTable.finalY + 10;
   });
+
   doc.save('Expenditure_Report.pdf');
 }
 
 // --- Initialize ---
-fetchPersonalExpenses();
 fetchSites();
 </script>
-
-
 </body>
 </html>
-
-
-
-
