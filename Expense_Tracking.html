@@ -2,43 +2,155 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Sheet Test</title>
+  <title>Expense Tracker</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
-  <h2>Save Data to Sheet</h2>
-  <input type="text" id="name" placeholder="Name">
-  <input type="number" id="value" placeholder="Value">
-  <button onclick="saveData()">Save</button>
-  <pre id="saveResult"></pre>
+  <h2>Personal Expense</h2>
+  <input type="text" id="desc" placeholder="Description">
+  <input type="number" id="amt" placeholder="Amount">
+  <input type="date" id="date">
+  <select id="payment">
+    <option>Cash</option>
+    <option>IMPS</option>
+    <option>RTGS</option>
+    <option>PhonePe</option>
+  </select>
+  <button onclick="savePersonal()">Save Personal</button>
 
-  <h2>Fetch Data from Sheet</h2>
-  <button onclick="fetchData()">Fetch</button>
-  <pre id="fetchResult"></pre>
+  <h2>Site Expense</h2>
+  <input type="text" id="site" placeholder="Site Name">
+  <input type="text" id="category" placeholder="Category">
+  <input type="text" id="descSite" placeholder="Description">
+  <input type="number" id="amtSite" placeholder="Amount">
+  <input type="date" id="dateSite">
+  <select id="paymentSite">
+    <option>Cash</option>
+    <option>IMPS</option>
+    <option>RTGS</option>
+    <option>PhonePe</option>
+  </select>
+  <button onclick="saveSite()">Save Site Expense</button>
+
+  <h2>Filter & Print PDF</h2>
+  <label>Choose Type:</label>
+  <select id="filterType">
+    <option value="All">All</option>
+    <option value="Personal">Personal</option>
+    <option value="Site">Site</option>
+  </select>
+  <button onclick="printPDF()">Print PDF</button>
+
+  <h2>All Expenses (JSON)</h2>
+  <pre id="allExpenses"></pre>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbylUykNBa-0osCYFhJMxmkSMhvDX0nFR4Ef8hNi-VyNIdLi3YIXLPPMOmDYHT80mfVL/exec"; // <-- replace with deployed URL
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwgAe0nhiG7pYb2oHeQ0F1XsvUW3ebLPYnjNH7DIa8i0hcvcVQXmk_dX_Sh4yFqsdA7/exec"; // <-- Replace with your Web App URL
 
-function saveData() {
-  const name = document.getElementById("name").value;
-  const value = parseFloat(document.getElementById("value").value);
-  if (!name || isNaN(value)) { alert("Fill all fields"); return; }
+let allExpenses = [];
 
-  fetch(GAS_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "saveTestData", name, value }),
-    headers: { "Content-Type": "application/json" }
+// --- Save Personal Expense ---
+function savePersonal(){
+  const desc = document.getElementById("desc").value;
+  const amt = parseFloat(document.getElementById("amt").value);
+  const date = document.getElementById("date").value;
+  const payment = document.getElementById("payment").value;
+  if(!desc || isNaN(amt) || !date){ alert("Fill all fields"); return; }
+
+  fetch(GAS_URL,{
+    method:"POST",
+    body: JSON.stringify({action:"saveExpense", type:"Personal", desc, amt, date, payment}),
+    headers: {"Content-Type":"application/json"}
   })
-  .then(res => res.json())
-  .then(data => document.getElementById("saveResult").textContent = JSON.stringify(data, null, 2))
-  .catch(err => document.getElementById("saveResult").textContent = err);
+  .then(res=>res.json())
+  .then(data=>{
+    fetchExpenses();
+    alert("Personal saved! Total items: "+data.total);
+    document.getElementById("desc").value='';
+    document.getElementById("amt").value='';
+    document.getElementById("date").value='';
+  })
+  .catch(()=>alert("Error saving data!"));
 }
 
-function fetchData() {
-  fetch(GAS_URL + "?action=getTestData")
-    .then(res => res.json())
-    .then(data => document.getElementById("fetchResult").textContent = JSON.stringify(data, null, 2))
-    .catch(err => document.getElementById("fetchResult").textContent = err);
+// --- Save Site Expense ---
+function saveSite(){
+  const site = document.getElementById("site").value;
+  const category = document.getElementById("category").value;
+  const desc = document.getElementById("descSite").value;
+  const amt = parseFloat(document.getElementById("amtSite").value);
+  const date = document.getElementById("dateSite").value;
+  const payment = document.getElementById("paymentSite").value;
+  if(!site || !category || !desc || isNaN(amt) || !date){ alert("Fill all fields"); return; }
+
+  fetch(GAS_URL,{
+    method:"POST",
+    body: JSON.stringify({action:"saveExpense", type:"Site", site, category, desc, amt, date, payment}),
+    headers: {"Content-Type":"application/json"}
+  })
+  .then(res=>res.json())
+  .then(data=>{
+    fetchExpenses();
+    alert("Site saved! Total items: "+data.total);
+    document.getElementById("site").value='';
+    document.getElementById("category").value='';
+    document.getElementById("descSite").value='';
+    document.getElementById("amtSite").value='';
+    document.getElementById("dateSite").value='';
+  })
+  .catch(()=>alert("Error saving data!"));
 }
+
+// --- Fetch all expenses ---
+function fetchExpenses(){
+  fetch(GAS_URL+"?action=getAllExpenses")
+    .then(res=>res.json())
+    .then(data=>{
+      allExpenses = data;
+      document.getElementById("allExpenses").textContent = JSON.stringify(data,null,2);
+    })
+    .catch(()=>document.getElementById("allExpenses").textContent="Error fetching data!");
+}
+
+// --- Print PDF ---
+function printPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const filter = document.getElementById("filterType").value;
+  let data = allExpenses.filter(e => filter==="All" || e.type===filter);
+
+  doc.setFontSize(16);
+  doc.text("Expense Report", 14, 20);
+  doc.setFontSize(12);
+  doc.text("Date: "+new Date().toLocaleDateString(), 14, 28);
+
+  if(data.length===0){
+    doc.text("No records found for selected filter.", 14, 40);
+  } else {
+    let tableData = data.map(e=>[
+      e.type,
+      e.site || "-",
+      e.category || "-",
+      e.desc,
+      e.amt,
+      e.date,
+      e.payment
+    ]);
+
+    doc.autoTable({
+      head:[["Type","Site","Category","Description","Amount","Date","Payment"]],
+      body:tableData,
+      startY:35,
+      headStyles:{fillColor:[85,89,92]}
+    });
+  }
+
+  doc.save("Expense_Report.pdf");
+}
+
+// --- Initialize ---
+fetchExpenses();
 </script>
 </body>
 </html>
