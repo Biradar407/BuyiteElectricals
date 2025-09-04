@@ -335,9 +335,8 @@ function openAdminService(service) {
         let html = `<h3 style="color:var(--brand); margin-bottom:12px;">${service.charAt(0).toUpperCase() + service.slice(1)}</h3>`;
         
         if (service === 'expense') {
-            // Open expense in a new tab
-            window.open('https://script.google.com/macros/s/AKfycbz_JSfnJLMqqq7D7_X6mF84IQvf394j3kB8QUidCCOG2j-MORack6KRXUiGY2AVuwAs/exec', '_blank');
-            html += `<p>Expense opened in a new tab.</p>`;
+            // Load expense in the same page via iframe
+            html += `<iframe src="https://script.google.com/macros/s/AKfycbz_JSfnJLMqqq7D7_X6mF84IQvf394j3kB8QUidCCOG2j-MORack6KRXUiGY2AVuwAs/exec" style="width:100%; height:1178px; max-width:612px; border:none; border-radius:8px;"></iframe>`;
         } else if (service === 'invoice') {
             html += `<iframe src="invoice.html" style="width:100%; height:500px; border:none; border-radius:8px;"></iframe>`;
         } else if (service === 'quotation') {
