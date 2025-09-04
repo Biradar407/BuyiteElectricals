@@ -329,24 +329,13 @@
 
   // ===== Open Admin Services in Panel =====
 function openAdminService(service) {
-  const content = document.getElementById('adminServiceContent');
-  content.style.opacity = 0;
-
-  setTimeout(() => {
-    let html = `<h3 style="color:var(--brand); margin-bottom:12px;">
-                  ${service.charAt(0).toUpperCase() + service.slice(1)}
-                </h3>`;
-
-    if (service === 'expense') {
-      // Open in a new tab (no iframe issues)
-      window.open(
-        "https://script.google.com/macros/s/AKfycbz_JSfnJLMqqq7D7_X6mF84IQvf394j3kB8QUidCCOG2j-MORack6KRXUiGY2AVuwAs/exec",
-        "_blank"
-      );
-      return; // ⬅️ Stop here so we don't overwrite content
-    }
-
- else if (service === 'invoice') {
+    const content = document.getElementById('adminServiceContent');
+    content.style.opacity = 0;
+    setTimeout(() => {
+      let html = `<h3 style="color:var(--brand); margin-bottom:12px;">${service.charAt(0).toUpperCase() + service.slice(1)}</h3>`;
+      if (service === 'expense') {
+        html += `<iframe src="expense.html" style="width:100%; height:500px; border:none; border-radius:8px;"></iframe>`;
+      } else if (service === 'invoice') {
         html += `<iframe src="invoice.html" style="width:100%; height:500px; border:none; border-radius:8px;"></iframe>`;
       } else if (service === 'quotation') {
         html += `<iframe src="quotation.html" style="width:100%; height:500px; border:none; border-radius:8px;"></iframe>`;
